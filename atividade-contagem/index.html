@@ -98,21 +98,21 @@ button{
 
 <div id="score">0 de 9 corretos</div>
 <div class="actions">
-  <button id="clear">Limpar</button>
-  <button id="check">✓ Conferir respostas</button>
+  <button id="clear" type="button">Limpar</button>
+  <button id="check" type="button">✓ Conferir respostas</button>
 </div>
 
 <script>
 const items = [
   {id:1,name:"bola",icon:"⚽",count:11,cols:4},
-  {id:2,name:"janela",icon:"🪟",count:12,cols:4},
-  {id:3,name:"boneca",icon:"🪆",count:13,cols:5},
-  {id:4,name:"banana",icon:"🍌",count:14,cols:5},
-  {id:5,name:"copo",icon:"🥤",count:15,cols:5},
-  {id:6,name:"bolo",icon:"🎂",count:16,cols:6},
-  {id:7,name:"bota",icon:"👢",count:17,cols:6},
-  {id:8,name:"dado",icon:"🎲",count:18,cols:6},
-  {id:9,name:"casa",icon:"🏠",count:19,cols:7}
+  {id:2,name:"janela",icon:"🪟",count:14,cols:5},
+  {id:3,name:"boneca",icon:"🪆",count:17,cols:5},
+  {id:4,name:"banana",icon:"🍌",count:21,cols:6},
+  {id:5,name:"copo",icon:"🥤",count:24,cols:6},
+  {id:6,name:"bolo",icon:"🎂",count:27,cols:7},
+  {id:7,name:"bota",icon:"👢",count:31,cols:7},
+  {id:8,name:"dado",icon:"🎲",count:35,cols:7},
+  {id:9,name:"casa",icon:"🏠",count:39,cols:8}
 ];
 const aliases={
   bola:["bola","bolas"], janela:["janela","janelas"], boneca:["boneca","bonecas"],
@@ -153,10 +153,14 @@ function check(){
     const countOK=Number(c.value)===item.count;
     n.style.borderColor=nameOK?"#22a06b":"#cf4c43";
     c.style.borderColor=countOK?"#22a06b":"#cf4c43";
-    if(nameOK&&countOK){correct++;f.className="feedback ok";f.textContent="Muito bem! ✓"}
-    else if(nameOK){f.className="feedback err";f.textContent="Conte novamente."}
-    else if(countOK){f.className="feedback err";f.textContent="Confira o nome."}
-    else{f.className="feedback err";f.textContent="Confira as respostas."}
+    if(nameOK&&countOK){
+      correct++;
+      f.className="feedback ok";
+      f.textContent="Muito bem! ✓";
+    } else {
+      f.className="feedback err";
+      f.textContent=`Resposta: ${item.name} — ${item.count}`;
+    }
   });
   document.getElementById("score").textContent=`${correct} de 9 corretos`;
 }
