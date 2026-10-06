@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atividade 3 - Descubra o nome e a quantidade</title>
+<style>
+:root{
+  --ink:#18324a; --blue:#2f6fed; --green:#1f9d65; --red:#c93b32;
+  --bg:#f6fbff; --card:#fff; --line:#dbe8f3;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink)}
+body{
+  background:
+    radial-gradient(circle at 10% 0%,#dff5ff 0,transparent 28%),
+    radial-gradient(circle at 100% 0%,#fff0c8 0,transparent 30%),
+    linear-gradient(180deg,#f7fbff 0%,#fffaf2 100%);
+}
+main{max-width:1500px;margin:0 auto;padding:18px 18px 86px}
+header{
+  background:linear-gradient(180deg,#fff4a9,#ffe68b);
+  border:3px solid #f2c02d;border-radius:24px;
+  text-align:center;padding:14px 18px 12px;
+  box-shadow:0 8px 24px rgba(30,64,175,.08);
+  margin-bottom:16px;
+}
+h1{margin:0;font-size:clamp(24px,3vw,44px);line-height:1.05;color:#1e4ea8}
+header p{margin:7px 0 0;font-size:clamp(14px,1.4vw,19px);font-weight:800;color:#574500}
+.grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;
+}
+.card{
+  --accent:#5aa8ff;
+  position:relative;background:var(--card);border:2px solid #d8e5ef;border-radius:22px;
+  padding:14px 14px 12px;box-shadow:0 8px 20px rgba(15,23,42,.08);
+  min-height:245px;display:flex;flex-direction:column;overflow:hidden;
+}
+.card:before{content:"";position:absolute;left:0;top:0;right:0;height:8px;background:var(--accent)}
+.card:nth-child(1){--accent:#f4c430}.card:nth-child(2){--accent:#62b0ff}.card:nth-child(3){--accent:#f08bc1}
+.card:nth-child(4){--accent:#79c96b}.card:nth-child(5){--accent:#ff9e57}.card:nth-child(6){--accent:#ad8df7}
+.card:nth-child(7){--accent:#f3cf4d}.card:nth-child(8){--accent:#5ca9de}.card:nth-child(9){--accent:#64c985}
+.cardhead{display:flex;align-items:center;gap:10px;margin-bottom:8px;padding-top:2px}
+.num{
+  width:38px;height:38px;border-radius:50%;display:grid;place-items:center;
+  font-weight:900;font-size:20px;background:#ffe05f;border:2px solid #f0b90b;
+  flex:0 0 auto
+}
+.hint{font-weight:900;font-size:15px;color:#38516a}
+.figures{
+  flex:1;display:grid;align-content:center;justify-content:center;
+  gap:5px 7px;padding:6px 4px 10px;min-height:120px;
+}
+.obj{display:grid;place-items:center;font-size:clamp(25px,2.4vw,39px);line-height:1;filter:drop-shadow(0 1px 1px rgba(0,0,0,.1))}
+.answers{display:grid;grid-template-columns:1fr 118px;gap:8px}
+label{font-size:12px;font-weight:900;color:#486176}
+input{
+  width:100%;margin-top:4px;border:2px solid #b9ccdb;border-radius:11px;
+  padding:8px 9px;font-size:16px;outline:none;background:#fff
+}
+input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(47,111,237,.12)}
+.feedback{height:20px;margin-top:6px;font-size:12px;font-weight:900}
+.ok{color:var(--green)} .err{color:var(--red)}
+.actions{
+  position:fixed;right:20px;bottom:18px;z-index:20;display:flex;gap:10px;align-items:center
+}
+button{
+  border:0;border-radius:15px;padding:12px 18px;font-size:16px;font-weight:900;
+  cursor:pointer;box-shadow:0 8px 22px rgba(15,23,42,.18)
+}
+#check{background:linear-gradient(180deg,#3478f6,#245fd0);color:white}
+#clear{background:white;color:#27425c;border:2px solid #cedce7}
+#score{
+  position:fixed;left:20px;bottom:22px;z-index:20;background:rgba(255,255,255,.95);
+  border:2px solid #d6e3ee;border-radius:14px;padding:9px 14px;font-weight:900;
+  box-shadow:0 8px 20px rgba(15,23,42,.10);min-width:160px;text-align:center
+}
+@media(max-width:1050px){
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:680px){
+  main{padding:10px 10px 110px}.grid{grid-template-columns:1fr}
+  .card{min-height:230px}.obj{font-size:34px}.answers{grid-template-columns:1fr 110px}
+  .actions{right:10px;bottom:10px}.actions button{padding:11px 14px;font-size:14px}
+  #score{left:10px;bottom:68px;font-size:13px}
+}
+
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>ATIVIDADE 3: DESCUBRA O NOME E A QUANTIDADE</h1>
+    <p>Observe as figuras. Escreva o nome e a quantidade de cada grupo.</p>
+  </header>
+
+  <section class="grid" id="grid"></section>
+</main>
+
+<div id="score">0 de 9 corretos</div>
+<div class="actions">
+  <button id="clear" type="button">Limpar</button>
+  <button id="check" type="button">✓ Conferir respostas</button>
+</div>
+
+<script>
+const items = [
+  {id:1,name:"sino",icon:"🔔",count:13,cols:5},
+  {id:2,name:"pera",icon:"🍐",count:16,cols:4},
+  {id:3,name:"vaca",icon:"🐄",count:19,cols:5},
+  {id:4,name:"foca",icon:"🦭",count:23,cols:6},
+  {id:5,name:"rato",icon:"🐭",count:26,cols:6},
+  {id:6,name:"lua",icon:"🌙",count:30,cols:6},
+  {id:7,name:"gelo",icon:"🧊",count:33,cols:7},
+  {id:8,name:"suco",icon:"🧃",count:37,cols:8},
+  {id:9,name:"lobo",icon:"🐺",count:38,cols:8}
+];
+const aliases={
+  sino:["sino","sinos"], pera:["pera","peras"], vaca:["vaca","vacas"],
+  foca:["foca","focas"], rato:["rato","ratos"], lua:["lua","luas"],
+  gelo:["gelo","gelos"], suco:["suco","sucos"], lobo:["lobo","lobos"]
+};
+const norm=s=>(s||"").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+
+function render(){
+  const grid=document.getElementById("grid");
+  grid.innerHTML=items.map(i=>`
+    <article class="card" data-id="${i.id}">
+      <div class="cardhead">
+        <div class="num">${i.id}</div>
+        <div class="hint">Escreva o nome e a quantidade</div>
+      </div>
+      <div class="figures" style="grid-template-columns:repeat(${i.cols}, minmax(24px,1fr))">
+        ${Array.from({length:i.count},()=>`<span class="obj">${i.icon}</span>`).join("")}
+      </div>
+      <div class="answers">
+        <label>Nome
+          <input class="name" type="text" autocomplete="off" placeholder="Nome da figura">
+        </label>
+        <label>Quantidade
+          <input class="count" type="text" inputmode="numeric" autocomplete="off" placeholder="Número">
+        </label>
+      </div>
+      <div class="feedback"></div>
+    </article>
+  `).join("");
+}
+function check(){
+  let correct=0;
+  document.querySelectorAll(".card").forEach(card=>{
+    const item=items.find(x=>x.id===Number(card.dataset.id));
+    const n=card.querySelector(".name"), c=card.querySelector(".count"), f=card.querySelector(".feedback");
+    const nameOK=aliases[item.name].map(norm).includes(norm(n.value));
+    const countOK=Number(c.value)===item.count;
+    n.style.borderColor=nameOK?"#22a06b":"#cf4c43";
+    c.style.borderColor=countOK?"#22a06b":"#cf4c43";
+    if(nameOK&&countOK){
+      correct++;
+      f.className="feedback ok";
+      f.textContent="Muito bem! ✓";
+    } else {
+      f.className="feedback err";
+      f.textContent=`Resposta: ${item.name} — ${item.count}`;
+    }
+  });
+  document.getElementById("score").textContent=`${correct} de 9 corretos`;
+}
+function clearAll(){
+  document.querySelectorAll("input").forEach(i=>{i.value="";i.style.borderColor=""});
+  document.querySelectorAll(".feedback").forEach(f=>{f.textContent="";f.className="feedback"});
+  document.getElementById("score").textContent="0 de 9 corretos";
+}
+render();
+document.getElementById("check").addEventListener("click",check);
+document.getElementById("clear").addEventListener("click",clearAll);
+</script>
+</body>
+</html>
